@@ -14,20 +14,16 @@
     "friendlyCode": "test_page_2_friendly_url",
     "seoDataByLang": {
       "en": {
-        "description": "asdasasd asdasd",
-        "keywords": "assaasd asdasd",
+        "description": "test page",
+        "keywords": "keyword number 1, keyword number 2",
         "metaTags": [],
         "inheritDescriptionFromDefaultLang": false,
         "inheritKeywordsFromDefaultLang": false
       },
       "it": {
-        "description": "aasas",
-        "keywords": "asasdasd",
+        "description": "",
+        "keywords": "",
         "metaTags": [],
-        "inheritDescriptionFromDefaultLang": true,
-        "inheritKeywordsFromDefaultLang": true
-      }
-    },
         "inheritDescriptionFromDefaultLang": true,
         "inheritKeywordsFromDefaultLang": true
       }

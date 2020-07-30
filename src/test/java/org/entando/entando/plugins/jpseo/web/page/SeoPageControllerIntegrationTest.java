@@ -414,6 +414,9 @@ public class SeoPageControllerIntegrationTest extends AbstractControllerIntegrat
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .header("Authorization", "Bearer " + accessToken));
         result1.andExpect(expected);
+
+        System.out.println("result1: \n" + result1.andReturn().getResponse().getContentAsString());
+
         return result1;
     }
 
