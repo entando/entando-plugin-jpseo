@@ -248,7 +248,7 @@ public class SeoPageService extends PageService {
                             inheritKeywords);
                     keywordsAps.put(lang, keywordsPageMetaTag);
                 }
-                if (null != seoDataByLang.getKeywords()) {
+                if (null != seoDataByLang.getDescription()) {
                     PageMetatag descriptionPageMetaTag = new PageMetatag(lang, "description",
                             seoDataByLang.getDescription().trim(), inheritDescription);
 

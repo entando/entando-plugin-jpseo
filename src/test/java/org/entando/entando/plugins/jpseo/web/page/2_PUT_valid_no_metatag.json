@@ -1,0 +1,43 @@
+{
+  "charset": "utf-8",
+  "code": "seoTest2",
+  "contentType": "text/html",
+  "displayedInMenu": true,
+  "ownerGroup": "free",
+  "pageModel": "home",
+  "parentCode": "homepage",
+  "seo": true,
+  "joinGroups": [
+    "administrators"
+  ],
+  "seoData": {
+    "friendlyCode": "test_page_2_friendly_url",
+    "seoDataByLang": {
+      "en": {
+        "description": "asdasasd asdasd",
+        "keywords": "assaasd asdasd",
+        "metaTags": [],
+        "inheritDescriptionFromDefaultLang": false,
+        "inheritKeywordsFromDefaultLang": false
+      },
+      "it": {
+        "description": "aasas",
+        "keywords": "asasdasd",
+        "metaTags": [],
+        "inheritDescriptionFromDefaultLang": true,
+        "inheritKeywordsFromDefaultLang": true
+      }
+    },
+        "inheritDescriptionFromDefaultLang": true,
+        "inheritKeywordsFromDefaultLang": true
+      }
+    },
+    "useExtraDescriptions": true,
+    "useExtraTitles": true
+  },
+  "status": "draft",
+  "titles": {
+    "en": "Test Page",
+    "it": "Pagina di test"
+  }
+}

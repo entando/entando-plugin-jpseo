@@ -368,6 +368,14 @@ public class SeoPageControllerIntegrationTest extends AbstractControllerIntegrat
             //    resultPutMetaDefaultLangTrue.andExpect(jsonPath("$.payload.seoData.seoDataByLang.it.inheritDescriptionFromDefaultLang",is(true)));
             //    resultPutMetaDefaultLangTrue.andExpect(jsonPath("$.payload.seoData.seoDataByLang.it.inheritKeywordsFromDefaultLang",is(true)));
 
+
+            final ResultActions resultNoMetatag = this
+                    .executePutSeoPage("2_PUT_valid_no_metatag.json", accessToken, status().isOk());
+
+            Assert.assertNotNull(this.pageService.getPage(SEO_TEST_2, IPageService.STATUS_DRAFT));
+
+
+
         } finally {
             PageDto page = this.pageService.getPage(SEO_TEST_2, IPageService.STATUS_DRAFT);
             if (null != page) {
@@ -388,6 +396,9 @@ public class SeoPageControllerIntegrationTest extends AbstractControllerIntegrat
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .header("Authorization", "Bearer " + accessToken));
         result.andExpect(expected);
+
+
+        System.out.println("result: \n" + result.andReturn().getResponse().getContentAsString());
         return result;
     }
 
