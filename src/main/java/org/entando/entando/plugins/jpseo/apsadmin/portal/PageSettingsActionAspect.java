@@ -177,8 +177,9 @@ public class PageSettingsActionAspect {
                         action.getText("jpseo.error.robotFilePath.invalid", new String[]{alternativePath}));
             } else if (this.checkPath(alternativePath, action)) {
                 if (null != is) {
-                    //alternativePath and string
-                    this.saveFile(alternativePath, is, action);
+                    // SONAR-FALSE-POSITIVE:
+                    // alternativePath is actually checked by PageSettingsUtils.isRightPath
+                    this.saveFile(alternativePath, is, action); //XXX
                 } else {
                     File file = new File(alternativePath);
                     try {
