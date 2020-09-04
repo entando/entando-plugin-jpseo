@@ -6,6 +6,8 @@
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=entando_entando-plugin-jpseo&metric=security_rating)](https://sonarcloud.io/dashboard?id=entando_entando-plugin-jpseo)
 [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=entando_entando-plugin-jpseo&metric=sqale_index)](https://sonarcloud.io/dashboard?id=entando_entando-plugin-jpseo)
 
+delete this line
+
 entando-plugin-jpseo
 # SEO
 
