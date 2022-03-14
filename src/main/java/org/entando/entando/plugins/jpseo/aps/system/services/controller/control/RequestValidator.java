@@ -91,16 +91,7 @@ public class RequestValidator extends com.agiletec.aps.system.services.controlle
                 lang = getLangManager().getLang(sect1);
                 String friendlyCode = matcher.group(2).substring(1);
                 FriendlyCodeVO vo = this.getSeoMappingManager().getReference(friendlyCode);
-                if (null != vo && null != lang && lang.getCode().equals(vo.getLangCode())) {
-                    if (null != vo.getPageCode()) {
-                        page = this.getPageManager().getOnlinePage(vo.getPageCode());
-					} else if (null != vo.getContentId()) {
-                        String contentId = vo.getContentId();
-                        String viewPageCode = this.getContentManager().getViewPage(contentId);
-                        page = this.getPageManager().getOnlinePage(viewPageCode);
-                        reqCtx.addExtraParam(JpseoSystemConstants.EXTRAPAR_HIDDEN_CONTENT_ID, contentId);
-                    }
-                }
+                page = this.getPage(vo, lang, reqCtx);
             }
         } else if (this.getResourcePath(reqCtx).equals("/pages")) {
             resourcePath = getFullResourcePath(reqCtx);
@@ -139,6 +130,22 @@ public class RequestValidator extends com.agiletec.aps.system.services.controlle
         reqCtx.addExtraParam(SystemConstants.EXTRAPAR_CURRENT_PAGE, page);
         return true;
     }
+
+	private IPage getPage(FriendlyCodeVO vo, Lang lang, RequestContext reqCtx) {
+		IPage page = null;
+		if (null != vo && null != lang) {
+			if (null != vo.getPageCode() && lang.getCode().equals(vo.getLangCode())) {
+				page = this.getPageManager().getOnlinePage(vo.getPageCode());
+			} else if (null != vo.getContentId() && (lang.getCode().equals(vo.getLangCode())
+					|| vo.getContentId().equals(reqCtx.getRequest().getParameter("contentId")))) {
+				String contentId = vo.getContentId();
+				String viewPageCode = this.getContentManager().getViewPage(contentId);
+				page = this.getPageManager().getOnlinePage(viewPageCode);
+				reqCtx.addExtraParam(JpseoSystemConstants.EXTRAPAR_HIDDEN_CONTENT_ID, contentId);
+			}
+		}
+		return page;
+	}
 	
 	/**
 	 * Qualora si usasse il mapping /pages/*
