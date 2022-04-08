@@ -9,7 +9,7 @@
     </parent>
     <artifactId>entando-plugin-jpseo</artifactId>
     <groupId>org.entando.entando.plugins</groupId>
-    <version>6.3.10-fix.1</version>
+    <version>6.3.10-fix.2</version>
     <packaging>war</packaging>
     <name>Entando Plugin: SEO</name>
     <description>Search Engine Optimization</description>
