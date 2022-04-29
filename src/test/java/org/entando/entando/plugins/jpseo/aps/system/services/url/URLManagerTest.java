@@ -24,6 +24,8 @@ import com.agiletec.aps.system.services.lang.Lang;
 import com.agiletec.aps.system.services.page.IPage;
 import com.agiletec.aps.system.services.page.IPageManager;
 import com.agiletec.aps.util.ApsProperties;
+import java.util.HashMap;
+import java.util.Map;
 import org.entando.entando.plugins.jpseo.aps.system.services.page.PageMetatag;
 import org.entando.entando.plugins.jpseo.aps.system.services.page.SeoPageMetadata;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,7 +34,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -171,6 +172,19 @@ class URLManagerTest {
         request.addHeader("X-Forwarded-Proto", "https");
         url = this.urlManager.getURLString(pageURL, reqCtx);
         assertEquals("https://"+expectedUrl, url);
+    }
+    
+    @Test
+    void testCreateUrl() {
+        String expectedUrl = "http://www.entando.org/entando/page/en/en_friendly?param=value";
+        Mockito.lenient().when(configManager.getParam(SystemConstants.CONFIG_PARAM_BASE_URL_CONTEXT)).thenReturn("true");
+        Mockito.lenient().when(configManager.getParam(SystemConstants.CONFIG_PARAM_BASE_URL)).thenReturn(SystemConstants.CONFIG_PARAM_BASE_URL_FROM_REQUEST);
+        RequestContext reqCtx = this.createRequestContext();
+        Lang lang = (Lang) reqCtx.getExtraParam(SystemConstants.EXTRAPAR_CURRENT_LANG);
+        Map<String, String> params = new HashMap<>();
+        params.put("param", "value");
+        String url = this.urlManager.createURL(this.page, lang, params, false, reqCtx.getRequest());
+        assertEquals(expectedUrl, url);
     }
     
     public RequestContext createRequestContext() {
