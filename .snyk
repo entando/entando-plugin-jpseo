@@ -9,7 +9,7 @@ ignore:
           vulnerability impossible to be exploited by external sources.'
   SNYK-JAVA-IOSPRINGFOX-1317096:
     - '*':
-        reason: 'Swagger is enabled only in development environment. This is also a low risk and low possibility attack.'
+        reason: 'Swagger is enabled only in development environment. This vulnerability is also a low risk and low possibility attack.'
   SNYK-JAVA-IONETTY-1042268:
     - '*':
         reason: 'Temporary suppression. We always connect to an internal and safe Redis server.'
