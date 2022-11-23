@@ -1,5 +1,6 @@
 package org.entando.entando.plugins.jpseo.web.page;
 
+import com.agiletec.aps.system.services.lang.LangManager;
 import com.agiletec.aps.system.services.page.IPage;
 import com.agiletec.aps.system.services.user.UserDetails;
 
@@ -47,6 +48,9 @@ public class SeoPageController implements ISeoPageController {
     private SeoPageValidator seoPageValidator;
 
     @Autowired
+    private LangManager langManager;
+
+    @Autowired
     private PageAuthorizationService authorizationService;
 
     public IPageService getPageService() {
@@ -92,6 +96,7 @@ public class SeoPageController implements ISeoPageController {
         if (bindingResult.hasErrors()) {
             throw new ValidationGenericException(bindingResult);
         }
+
         getSeoPageValidator().validate(pageRequest, bindingResult);
         if ((null!=pageRequest.getSeoData()) && (null!=pageRequest.getSeoData().getSeoDataByLang())) {
             for (Entry<String, SeoDataByLang> entry : pageRequest.getSeoData().getSeoDataByLang().entrySet()) {
@@ -116,6 +121,9 @@ public class SeoPageController implements ISeoPageController {
             throw new ResourcePermissionsException(user.getUsername(), pageRequest.getCode());
         }
 
+        validateDefaultLangPageTitle(pageRequest, bindingResult);
+
+
         SeoPageDto dto = (SeoPageDto) this.getPageService().addPage(pageRequest);
         return new ResponseEntity<>(new SimpleRestResponse<>(dto), HttpStatus.OK);
     }
@@ -125,6 +133,19 @@ public class SeoPageController implements ISeoPageController {
         seoPageValidator.validateGroups(pageRequest.getOwnerGroup(), parent.getGroup(), bindingResult);
         if (bindingResult.hasErrors()) {
             throw new ValidationUnprocessableEntityException(bindingResult);
+        }
+    }
+    private void validateDefaultLangPageTitle(PageRequest pageRequest, BindingResult bindingResult) {
+
+        String defaultLangTitle = pageRequest.getTitles().get(langManager.getDefaultLang().getCode());
+
+        if ((null == defaultLangTitle) || (defaultLangTitle.isEmpty())) {
+            String defaultLangCode = langManager.getDefaultLang().getCode().toUpperCase();
+            bindingResult.reject("12", "Invalid title for the default language " + defaultLangCode);
+        }
+
+        if (bindingResult.hasErrors()) {
+            throw new ValidationGenericException(bindingResult);
         }
     }
 
@@ -151,6 +172,8 @@ public class SeoPageController implements ISeoPageController {
         if (bindingResult.hasErrors()) {
             throw new ValidationConflictException(bindingResult);
         }
+
+        validateDefaultLangPageTitle(pageRequest, bindingResult);
 
         if ((null != pageRequest.getSeoData()) && (null != pageRequest.getSeoData().getSeoDataByLang())) {
             for (Entry<String, SeoDataByLang> entry : pageRequest.getSeoData().getSeoDataByLang().entrySet()) {
