@@ -101,8 +101,11 @@ public class SeoMappingManager extends AbstractService implements ISeoMappingMan
                 && !PageChangedEvent.EVENT_TYPE_SET_PAGE_ONLINE.equals(event.getEventType())) {
             return;
         }
-        try {
+        if (PageChangedEvent.EVENT_TYPE_SET_PAGE_OFFLINE.equals(event.getEventType())) {
             this.getSeoMappingDAO().deleteMappingForPage(page.getCode());
+        } else {
+            this.getSeoMappingDAO().deleteMappingForPage(page.getCode());
+
             if (PageChangedEvent.REMOVE_OPERATION_CODE != event.getOperationCode() && friendlyCodes != null) {
                 for (Entry<Object, Object> entry : seoMetadata.getFriendlyCodes().entrySet()) {
                     if (entry.getValue() instanceof PageMetatag) {
@@ -116,6 +119,8 @@ public class SeoMappingManager extends AbstractService implements ISeoMappingMan
                     }
                 }
             }
+        }
+        try {
             SeoChangedEvent seoEvent = new SeoChangedEvent();
             seoEvent.setOperationCode(SeoChangedEvent.PAGE_CHANGED_EVENT);
             this.notifyEvent(seoEvent);
