@@ -13,26 +13,9 @@
  */
 package org.entando.entando.plugins.jpseo.web.page;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
-import static org.hamcrest.Matchers.is;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import com.agiletec.aps.system.common.FieldSearchFilter;
 import com.agiletec.aps.system.common.notify.NotifyManager;
 import com.agiletec.aps.system.services.group.Group;
-import com.agiletec.aps.system.services.page.IPage;
-import com.agiletec.aps.system.services.page.IPageManager;
-import com.agiletec.aps.system.services.page.Page;
-import com.agiletec.aps.system.services.page.PageMetadata;
-import com.agiletec.aps.system.services.page.PageTestUtil;
+import com.agiletec.aps.system.services.page.*;
 import com.agiletec.aps.system.services.pagemodel.PageModel;
 import com.agiletec.aps.system.services.role.Permission;
 import com.agiletec.aps.system.services.user.UserDetails;
@@ -40,10 +23,6 @@ import com.agiletec.aps.util.ApsProperties;
 import com.agiletec.aps.util.FileTextReader;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
-import java.io.InputStream;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import org.entando.entando.aps.system.services.page.IPageService;
 import org.entando.entando.aps.system.services.page.model.PageDto;
 import org.entando.entando.plugins.jpseo.aps.system.services.mapping.FriendlyCodeVO;
@@ -61,6 +40,17 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
+
+import java.io.InputStream;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class SeoPageControllerIntegrationTest extends AbstractControllerIntegrationTest {
 
@@ -1133,6 +1123,32 @@ class SeoPageControllerIntegrationTest extends AbstractControllerIntegrationTest
           } finally {
             this.pageManager.deletePage(SEO_TEST_6);
             seoMappingManager.getSeoMappingDAO().deleteMappingForPage(SEO_TEST_6);
+        }
+    }
+
+    @Test
+    void testPostSeoPageEmptyDefaultLangTitle() throws Exception {
+            String accessToken = this.createAccessToken();
+            ResultActions result1 = this.executePostSeoPage("2_POST_invalid_default_lang_empty_title.json", accessToken, status().isBadRequest());
+            result1.andExpect(jsonPath("$.errors.size()", is(1)))
+                   .andExpect(jsonPath("$.errors[0].code", is("12")))
+                   .andExpect(jsonPath("$.errors[0].message", is("Invalid title for the default language IT")));
+    }
+
+    @Test
+    void testPutSeoPageEmptyDefaultLangTitle() throws Exception {
+        try {
+            String accessToken = this.createAccessToken();
+            this.executePostSeoPage("2_POST_valid.json", accessToken, status().isOk());
+            Assertions.assertNotNull(this.pageService.getPage(SEO_TEST_2, IPageService.STATUS_DRAFT));
+
+            this.executePutSeoPage("2_POST_invalid_default_lang_empty_title.json", SEO_TEST_2, accessToken, status().isBadRequest())
+                    .andExpect(jsonPath("$.errors.size()", is(1)))
+                    .andExpect(jsonPath("$.errors[0].code", is("12")))
+                    .andExpect(jsonPath("$.errors[0].message", is("Invalid title for the default language IT")));
+        } finally {
+            this.pageManager.deletePage(SEO_TEST_2);
+            seoMappingManager.getSeoMappingDAO().deleteMappingForPage(SEO_TEST_2);
         }
     }
 
