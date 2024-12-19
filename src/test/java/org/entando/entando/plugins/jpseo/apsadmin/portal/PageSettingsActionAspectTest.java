@@ -21,6 +21,7 @@
  */
 package org.entando.entando.plugins.jpseo.apsadmin.portal;
 
+import org.entando.entando.apsadmin.user.UserSettingsAction;
 import org.entando.entando.ent.exception.EntException;
 import com.agiletec.aps.system.services.baseconfig.ConfigInterface;
 import com.agiletec.apsadmin.portal.PageSettingsAction;
@@ -83,6 +84,9 @@ class PageSettingsActionAspectTest {
 
     @InjectMocks
     private PageSettingsAction pageSettingsAction;
+
+    @InjectMocks
+    private UserSettingsAction userSettingsAction;
 
     @InjectMocks
     private PageSettingsActionAspect actionAspect;
@@ -205,6 +209,14 @@ class PageSettingsActionAspectTest {
         Mockito.verify(storageManager, Mockito.times(1)).deleteFile(Mockito.anyString(), Mockito.anyBoolean());
         Assertions.assertFalse(pageSettingsAction.hasFieldErrors());
         Assertions.assertTrue(pageSettingsAction.hasActionErrors());
+    }
+
+    @Test
+    public void executeUpdateSystemWithIncorrectObject() throws EntException {
+        when(joinPoint.getTarget()).thenReturn(userSettingsAction);
+        actionAspect.executeUpdateSystemParams(joinPoint);
+        Assertions.assertFalse(pageSettingsAction.hasFieldErrors());
+        Assertions.assertFalse(pageSettingsAction.hasActionErrors());
     }
 
 }
