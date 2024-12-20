@@ -152,13 +152,25 @@ public class PageSettingsActionAspect {
 
     @Before("execution(* com.agiletec.apsadmin.admin.AbstractParameterizableManagerSettingsAction.updateSystemParams())")
     public void executeUpdateSystemParamsForAjax(JoinPoint joinPoint) {
-        this.executeUpdateSystemParams(joinPoint);
+        if (joinPoint.getTarget() instanceof PageSettingsAction) {
+            this.executeUpdateSystemParams(joinPoint);
+        } else {
+            logger.debug("joinPoint target object is not a PageSettingsAction, ignoring");
+        }
     }
 
     @Before("execution(* com.agiletec.apsadmin.portal.PageSettingsAction.updateSystemParamsForAjax())")
     public void executeUpdateSystemParams(JoinPoint joinPoint) {
         HttpServletRequest request = ServletActionContext.getRequest();
-        PageSettingsAction action = (PageSettingsAction) joinPoint.getTarget();
+        PageSettingsAction action;
+
+        if (joinPoint.getTarget() instanceof PageSettingsAction) {
+            action = (PageSettingsAction) joinPoint.getTarget();
+        } else {
+            logger.debug("joinPoint target object is not a PageSettingsAction, leaving");
+            return;
+        }
+
         try {
             String robotContent = request.getParameter(PARAM_ROBOT_CONTENT_CODE);
             String alternativePath = request.getParameter(PARAM_ROBOT_ALTERNATIVE_PATH_CODE);
