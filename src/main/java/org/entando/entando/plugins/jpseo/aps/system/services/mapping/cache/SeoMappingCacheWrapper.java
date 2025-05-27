@@ -26,6 +26,7 @@ import com.agiletec.aps.system.services.page.IPage;
 import com.agiletec.aps.system.services.page.IPageManager;
 import com.agiletec.aps.system.services.page.PageMetadata;
 import com.agiletec.aps.util.ApsProperties;
+import org.entando.entando.aps.system.services.cache.IFCacheWithPipeline;
 import org.entando.entando.ent.exception.EntException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,6 +39,7 @@ import org.entando.entando.plugins.jpseo.aps.system.services.mapping.FriendlyCod
 import org.entando.entando.plugins.jpseo.aps.system.services.mapping.ISeoMappingDAO;
 import org.entando.entando.ent.util.EntLogging.EntLogger;
 import org.entando.entando.ent.util.EntLogging.EntLogFactory;
+import org.entando.entando.plugins.jpseo.aps.system.services.page.PageMetatag;
 import org.entando.entando.plugins.jpseo.aps.system.services.page.SeoPageMetadata;
 import org.springframework.cache.Cache;
 
@@ -107,7 +109,7 @@ public class SeoMappingCacheWrapper extends AbstractCacheWrapper implements ISeo
         ApsProperties friendlyCodes = (metadata instanceof SeoPageMetadata) ?
                 ((SeoPageMetadata) metadata).getFriendlyCodes() : null;
         if (friendlyCodes != null) {
-            mapping.put((String)friendlyCodes.get(0), current.getCode());
+            friendlyCodes.values().forEach(tag -> mapping.put(((PageMetatag) tag).getValue(), current.getCode()));
         }
         String[] children = current.getChildrenCodes();
         if (null != children) {
@@ -118,6 +120,7 @@ public class SeoMappingCacheWrapper extends AbstractCacheWrapper implements ISeo
     }
     
     protected void releaseCachedObjects(Cache cache, String listKey, String prefixKey) {
+        IFCacheWithPipeline.pipelined(cache.getNativeCache(), cp -> {
 		List<String> codes = (List<String>) this.get(cache, listKey, List.class);
 		if (null != codes) {
 			for (String code : codes) {
@@ -125,9 +128,11 @@ public class SeoMappingCacheWrapper extends AbstractCacheWrapper implements ISeo
 			}
 			cache.evict(listKey);
 		}
+        });
 	}
     
     protected void insertAndCleanVoObjectsOnCache(Cache cache, Map<String, ?> objects, String listKey, String cacheKeyPrefix) {
+        IFCacheWithPipeline.pipelined(cache.getNativeCache(), cp -> {
         List<String> oldCodes = (List<String>) this.get(cache, listKey, List.class);
         List<String> oldCodesClone = (null != oldCodes) ? new ArrayList<>(oldCodes) : null;
         List<String> codes = new ArrayList<>();
@@ -146,6 +151,7 @@ public class SeoMappingCacheWrapper extends AbstractCacheWrapper implements ISeo
                 cache.evict(cacheKeyPrefix + code);
             }
         }
+        });
     }
     
 	@Override
