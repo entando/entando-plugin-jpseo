@@ -135,7 +135,7 @@ jobs:
       fail-fast: false
       matrix:
         scan-type: ${{fromJson(needs.prepare.outputs.SCAN_MATRIX)}}
-      
+
     steps:
       #~ CHECKOUT
       - name: "CHECKOUT"
