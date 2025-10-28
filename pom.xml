@@ -5,11 +5,11 @@
     <parent>
         <groupId>org.entando</groupId>
         <artifactId>entando-core-parent</artifactId>
-        <version>6.3.13</version>
+        <version>6.5.0</version>
     </parent>
     <artifactId>entando-plugin-jpseo</artifactId>
     <groupId>org.entando.entando.plugins</groupId>
-    <version>6.5.3</version>
+    <version>6.6.0</version>
     <packaging>war</packaging>
     <name>Entando Plugin: SEO</name>
     <description>Search Engine Optimization</description>
@@ -28,6 +28,7 @@
     </repositories>
     <properties>
         <checkstyle.skip>true</checkstyle.skip>
+        <entando-core-bom-version>6.6.0</entando-core-bom-version>
     </properties>
     <build>
         <resources>
@@ -118,7 +119,7 @@
             <dependency>
                 <groupId>org.entando</groupId>
                 <artifactId>entando-core-bom</artifactId>
-                <version>6.5.1</version>
+                <version>${entando-core-bom-version}</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
